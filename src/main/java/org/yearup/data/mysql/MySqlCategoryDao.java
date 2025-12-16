@@ -33,7 +33,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
                 ResultSet results = statement.executeQuery()
         ) {
             while (results.next()) {
-//
+
 //                int categoryId = results.getInt(1);
 //                String categoryName = results.getString(2);
 //                String description = results.getString(3);
@@ -176,5 +176,4 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
 
         return category;
     }
-
 }

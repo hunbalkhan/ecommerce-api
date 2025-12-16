@@ -92,7 +92,6 @@ public class CategoriesController
         categoryDao.update(id, category);
     }
 
-
     // add annotation to call this method for a DELETE action - the url path must include the categoryId
     // add annotation to ensure that only an ADMIN can call this function
     @DeleteMapping("/{id}")
@@ -100,7 +99,7 @@ public class CategoriesController
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable int id)
     {
-        // check if category existt before deleting
+        // check if category exist before deleting
         if (categoryDao.getById(id) == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
         }
