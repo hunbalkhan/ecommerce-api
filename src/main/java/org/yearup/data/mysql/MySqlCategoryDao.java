@@ -45,7 +45,6 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
 //      old code^^^
                 // using the method helper already made line 111 Convert the current row into a Category object and add to list
                 categories.add(mapRow(results));
-
             }
         }
         // get back full list
