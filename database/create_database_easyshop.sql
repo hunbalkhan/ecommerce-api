@@ -103,7 +103,7 @@ VALUES  ('user','$2a$10$NkufUPF3V8dEPSZeo1fzHe9ScBu.LOay9S3N32M84yuUM2OJYEJ/.','
 INSERT INTO profiles (user_id, first_name, last_name, phone, email, address, city, state, zip)
 VALUES  (1, 'Joe', 'Joesephus', '800-555-1234', 'joejoesephus@email.com', '789 Oak Avenue', 'Dallas', 'TX', '75051'),
         (2, 'Adam', 'Admamson', '800-555-1212', 'aaadamson@email.com', '456 Elm Street','Dallas','TX','75052'),
-        (3, 'George', 'Jetson', '800-555-9876', 'george.jetson@email.com', '123 Birch Parkway','Dallas','TX','75051')     ;
+        (3, 'George', 'Jetson', '800-555-9876', 'george.jetson@email.com', '123 Birch Parkway','Dallas','TX','75051');
 
 /* INSERT Categories */
 INSERT INTO categories (name, description) 
@@ -209,10 +209,20 @@ VALUES  ('Cookware Set', 149.99, 3, 'A comprehensive set of high-quality cookwar
         ('Measuring Cup Set', 14.99, 3, 'Accurately measure ingredients with this set of handy and stackable measuring cups.', 'measuring-cups.jpg', 50, 1, 'Green');
 
 -- sample duplicates from "bug"
-INSERT INTO products (name, price, category_id, description, image_url, stock, featured, subcategory)
-VALUES  ('Laptop', 999.99, 1, 'A high-performance laptop for work and entertainment.', 'laptop.jpg', 30, 0, 'Gray'),
-        ('Laptop', 999.99, 1, 'A high-performance gaming laptop.', 'laptop.jpg', 30, 0, 'Gray'),
-        ('Tea Kettle', 29.99, 3, 'Brew a perfect cup of tea with this classic tea kettle.', 'tea-kettle.jpg', 50, 1, 'White');
+-- INSERT INTO products (name, price, category_id, description, image_url, stock, featured, subcategory)
+-- VALUES  ('Laptop', 999.99, 1, 'A high-performance laptop for work and entertainment.', 'laptop.jpg', 30, 0, 'Gray'),
+--        ('Laptop', 999.99, 1, 'A high-performance gaming laptop.', 'laptop.jpg', 30, 0, 'Gray'),
+--  ('Tea Kettle', 29.99, 3, 'Brew a perfect cup of tea with this classic tea kettle.', 'tea-kettle.jpg', 50, 1, 'White');
+
+-- edit made for duplicates from "bug 2"
+UPDATE products -- (name, price, category_id, description, image_url, stock, featured, subcategory)
+SET name = 'Laptop', price = 999.99, category_id = 1, description = 'A high-performance gaming laptop.', image_url = 'laptop.jpg', stock = 30, featured = 0, subcategory = 'Gray'
+WHERE product_id = 2;
+
+-- edit made for duplicates tea kettle "bug 2"
+UPDATE products
+SET name = 'Tea Kettle', price = 29.99, category_id = 3, description = 'Brew a perfect cup of tea with this classic tea kettle.', image_url = 'measuring-cups.jpg', stock = 50, featured = 1, subcategory = 'Green'
+WHERE product_id = 81;
 
 -- add shopping cart items
 INSERT INTO shopping_cart (user_id, product_id, quantity)

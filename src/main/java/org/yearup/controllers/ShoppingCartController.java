@@ -3,9 +3,7 @@ package org.yearup.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.yearup.data.ProductDao;
 import org.yearup.data.ShoppingCartDao;
@@ -20,7 +18,7 @@ import java.security.Principal;
 @RestController
 @CrossOrigin
 @RequestMapping("/cart") // base URL
-@PreAuthorize("permitAll()")
+@PreAuthorize("isAuthenticated()")
 public class ShoppingCartController
 {
     // a shopping cart requires
@@ -38,8 +36,8 @@ public class ShoppingCartController
 
 
     // each method in this controller requires a Principal object as a parameter
-    public ShoppingCart getCart(Principal principal)
-    {
+    @GetMapping
+    public ShoppingCart getCart(Principal principal) {
         try
         {
             // get the currently logged in username
@@ -50,24 +48,55 @@ public class ShoppingCartController
             int userId = user.getId();
 
             // use the shoppingCartDao to get all items in the cart and return the cart
-            return null;
+            return shoppingCartDao.getByUserId(userId);
+            // return null;
         }
         catch(Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to load shopping cart");
         }
     }
 
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15 (15 is the productId to be added
+    @PostMapping("/products/{productId}")
+    public void addProduct(@PathVariable int productId, Principal principal){
+        try {
+            // current logged in user
+            String username = principal.getName();
+            User user = userDao.getByUserName(username);
+
+            // check if product is not found-----
+            // if statement...
+
+
+
+
+
+            // add product to shopping cart in the database
+            shoppingCartDao.addProduct(user.getId(), productId);
+
+        } catch (Exception e){
+//            throw e; // not sure what to catch here for now
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to add product to cart");
+        }
+    }
 
 
     // add a PUT method to update an existing product in the cart - the url should be
     // https://localhost:8080/cart/products/15 (15 is the productId to be updated)
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
+    @PutMapping("/products/{productId}")
+    public void updateProduct(@PathVariable int productId ){
+
+    }
 
 
     // add a DELETE method to clear all products from the current users cart
     // https://localhost:8080/cart
+    @DeleteMapping
+    public void clearCart(Principal principal){
+        String username = principal.get
+    }
 
 }
