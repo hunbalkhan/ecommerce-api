@@ -69,8 +69,8 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 
 
 
-
-    public void  addProduct(int userId, int productId)
+    @Override
+    public void addProduct(int userId, int productId)
     {
 //        String sql = """
 //            INSERT INTO shopping_cart (user_id, product_id, quantity)
@@ -91,7 +91,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 
         String query = """
                 INSERT INTO shopping_cart (user_id, product_id, quantity)
-                VALUES (?, ? , 1)""";
+                VALUES (?, ?, 1)""";
 
         try(
                 Connection connection = getConnection();
@@ -103,13 +103,11 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
             statement.setInt(2, productId);
 
             // execute
-            System.out.println( statement.executeUpdate());
+            statement.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
 
@@ -119,6 +117,29 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     @Override
     public void updateQuantity(int userId, int productId, int quantity) {
 
+        String query = """
+                UPDATE shopping_cart
+                SET quantity = ?
+                WHERE user_id = ? AND product_id = ?""";
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)
+            ){
+            // set qty
+            statement.setInt(1, quantity);
+
+            // identify row belonging to user
+            statement.setInt(2, userId);
+
+            // identify the product in the cart
+            statement.setInt(3, productId);
+
+            // execute
+            statement.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to update cart quantity", e);
+        }
     }
 
 

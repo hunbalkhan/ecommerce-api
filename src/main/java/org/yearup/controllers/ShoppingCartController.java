@@ -9,6 +9,7 @@ import org.yearup.data.ProductDao;
 import org.yearup.data.ShoppingCartDao;
 import org.yearup.data.UserDao;
 import org.yearup.models.ShoppingCart;
+import org.yearup.models.ShoppingCartItem;
 import org.yearup.models.User;
 
 import java.security.Principal;
@@ -60,7 +61,7 @@ public class ShoppingCartController
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15 (15 is the productId to be added
     @PostMapping("/products/{productId}")
-    public void addProduct(@PathVariable int productId, Principal principal){
+    public ShoppingCart addProduct(@PathVariable int productId, Principal principal){
         try {
             // current logged in user
             String username = principal.getName();
@@ -69,9 +70,9 @@ public class ShoppingCartController
             // check if product is not found-----
             // if statement...
 
-
-            // add product to shopping cart in the database
             shoppingCartDao.addProduct(user.getId(), productId);
+            // add product to shopping cart in the database
+            return shoppingCartDao.getByUserId(user.getId());
 
         } catch (Exception e){
 //            throw e; // not sure what to catch here for now
@@ -79,12 +80,41 @@ public class ShoppingCartController
         }
     }
 
+    // old method below with bug ------------------------------------------------
+//    @PostMapping("/products/{productId}")
+//    public void addProduct(@PathVariable int productId, Principal principal){
+//        try {
+//            // current logged in user
+//            String username = principal.getName();
+//            User user = userDao.getByUserName(username);
+//
+//            shoppingCartDao.addProduct(user.getId(), productId);
+//
+//        } catch (Exception e){
+////            throw e; // not sure what to catch here for now
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to add product to cart");
+//        }
+//    }
+
 
     // add a PUT method to update an existing product in the cart - the url should be
     // https://localhost:8080/cart/products/15 (15 is the productId to be updated)
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
     @PutMapping("/products/{productId}")
-    public void updateProduct(@PathVariable int productId ){
+    public ShoppingCart updateProduct(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal){
+        try {
+            // current logged in user
+            String username = principal.getName();
+            User user = userDao.getByUserName(username);
+            int userId = user.getId();
+
+            shoppingCartDao.updateQuantity(userId, productId, item.getQuantity());
+
+            // return updated cart
+            return shoppingCartDao.getByUserId(userId);
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to update cart");
+        }
 
     }
 
@@ -92,11 +122,12 @@ public class ShoppingCartController
     // add a DELETE method to clear all products from the current users cart
     // https://localhost:8080/cart
     @DeleteMapping
-    public void clearCart(Principal principal){
+    public ShoppingCart clearCart(Principal principal){
         String username = principal.getName();
         User user = userDao.getByUserName(username);
 
         shoppingCartDao.clear(user.getId());
+        return shoppingCartDao.getByUserId(user.getId());
     }
 
 }
