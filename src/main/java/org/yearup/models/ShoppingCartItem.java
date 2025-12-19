@@ -10,6 +10,15 @@ public class ShoppingCartItem
     private int quantity = 1;
     private BigDecimal discountPercent = BigDecimal.ZERO;
 
+    // made new constructor
+    public ShoppingCartItem(Product product, int quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public ShoppingCartItem(int productId, int quantity){
+
+    }
 
     public Product getProduct()
     {

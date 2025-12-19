@@ -1,6 +1,5 @@
 package org.yearup.data;
 
-import org.yearup.models.Category;
 import org.yearup.models.ShoppingCart;
 
 public interface ShoppingCartDao

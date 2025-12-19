@@ -8,10 +8,10 @@ import org.yearup.models.ShoppingCart;
 import org.yearup.models.ShoppingCartItem;
 
 import javax.sql.DataSource;
-import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Component
 public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDao {
@@ -25,6 +25,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 
     @Override
     public ShoppingCart getByUserId(int userId) {
+        // creates an empty cart
         ShoppingCart cart = new ShoppingCart();
 
         String query = """
@@ -41,16 +42,18 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 
             ResultSet results = statement.executeQuery();
 
-            // loop through each row in results
+            // loop through each row from the results
             while (results.next()){
+                // reads the product_id + quantity column from current row
                 int productId = results.getInt("product_id");
                 int quantity = results.getInt("quantity");
 
-                // getting product info from dao
+                // uses ProductDao to fetch the full product details, it converts the product a productId
                 Product product = productDao.getById(productId);
 
                 // make the cart
-                ShoppingCartItem item = new ShoppingCartItem();
+                ShoppingCartItem item = new ShoppingCartItem(productId, quantity);
+                // at
                 item.setProduct(product);
                 item.setQuantity(quantity);
 
@@ -67,7 +70,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 
 
 
-    public void addProduct(int userId, int productId)
+    public void  addProduct(int userId, int productId)
     {
 //        String sql = """
 //            INSERT INTO shopping_cart (user_id, product_id, quantity)
@@ -85,6 +88,28 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 //        {
 //            throw new RuntimeException("Failed to add product to cart", e);
 //        }
+
+        String query = """
+                INSERT INTO shopping_cart (user_id, product_id, quantity)
+                VALUES (?, ? , 1)""";
+
+        try(
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(query);
+                ){
+            // 1st placeholder
+            statement.setInt(1, userId);
+            // 2nd placeholder
+            statement.setInt(2, productId);
+
+            // execute
+            System.out.println( statement.executeUpdate());
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 

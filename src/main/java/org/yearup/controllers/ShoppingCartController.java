@@ -70,9 +70,6 @@ public class ShoppingCartController
             // if statement...
 
 
-
-
-
             // add product to shopping cart in the database
             shoppingCartDao.addProduct(user.getId(), productId);
 
@@ -96,7 +93,10 @@ public class ShoppingCartController
     // https://localhost:8080/cart
     @DeleteMapping
     public void clearCart(Principal principal){
-        String username = principal.get
+        String username = principal.getName();
+        User user = userDao.getByUserName(username);
+
+        shoppingCartDao.clear(user.getId());
     }
 
 }
