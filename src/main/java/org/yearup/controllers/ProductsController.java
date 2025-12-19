@@ -81,12 +81,10 @@ public class ProductsController
     {
         try
         {
-            productDao.create(product);
+            // productDao.create(product);
 
             // changed from create to update.
-            // make an insomnia test to try this out if its fixed
-            // productDao.update(product.getProductId(), product);
-
+            productDao.update(id, product);
         }
         catch(Exception ex)
         {

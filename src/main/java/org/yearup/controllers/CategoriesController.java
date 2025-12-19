@@ -100,9 +100,9 @@ public class CategoriesController
     public void deleteCategory(@PathVariable int id)
     {
         // check if category exist before deleting
-//        if (categoryDao.getById(id) == null){
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
-//        }
+        if (categoryDao.getById(id) == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
+        }
         // delete
         categoryDao.delete(id);
     }
